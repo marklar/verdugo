@@ -3,7 +3,7 @@
   (:require (clojure.contrib [math :as math]
 			     [duck-streams :as duck-streams])))
 
-(def lexicon-file-name "./Hangman_Interview_Attachments/words.txt")
+(def lexicon-file-name "./words.txt")
 (def lexicon (duck-streams/read-lines lexicon-file-name))
 
 (defn sort-hmap
