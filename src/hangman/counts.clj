@@ -16,9 +16,10 @@
   (count-elems (apply concat strs)))
 
 (defn diff-word-counts
-   "Given strs, count for each char how many distinct strs it appears in."
-   [strs]
-   (count-elems (apply concat (map set strs))))
+  "Given strs, count for each char how many distinct strs it appears in.
+   Return: Char -> Int."
+  [strs]
+  (count-elems (apply concat (map set strs))))
 
 ;;----
 

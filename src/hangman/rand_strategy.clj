@@ -14,7 +14,9 @@
 	ch
 	(recur)))))
 
-(defn next-random-guess [game]
+(defn next-random-guess
+  "Return: Char or nil."
+  [game]
   (if (keep-guessing? game)
     (random-unused-letter game)
     nil))

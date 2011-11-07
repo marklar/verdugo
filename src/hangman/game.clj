@@ -22,7 +22,7 @@
      (num-wrong-guesses-made game)))
 
 (defn lost? [game]
-  (< (num-wrong-guesses-remaining game) 0))
+  (<= (num-wrong-guesses-remaining game) 0))
 
 (defn won? [game]
   (= (:secret-word game) (:guessed-so-far game)))
@@ -34,6 +34,9 @@
 
 (defn keep-guessing? [game]
   (= (game-status game) :keep-guessing))
+
+(defn game-done? [game]
+  (not (keep-guessing? game)))
 
 (defn already-guessed-char?
   [game char]

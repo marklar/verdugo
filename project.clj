@@ -1,7 +1,7 @@
 (defproject hangman "0.0.1"
   :description "Strategy for playing Hangman."
   :url "localhost:8080"
-  :main hangman.letters
+  :main hangman.main
   :tasks []
   :dependencies
   [;; clojure
