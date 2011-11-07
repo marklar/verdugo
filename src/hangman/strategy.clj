@@ -15,17 +15,26 @@
 (defn secret-word-to-re-str
   "Turns '-pp--' into /^[a-z]pp[a-z][a-z]$/"
   [word]
-  (let [mk-re (fn [c] (if (= c mystery-letter) "[a-z]" (str c)))]
+  (let [char-re (fn [c] (if (= c mystery-letter) "[a-z]" (str c)))]
     (str \^
-	 (apply str (map mk-re word))
+	 (apply str (map char-re word))
 	 \$)))
 
-;; Not a candidate if already guessed.  :wrong-words
-(defn candidates
-  [game strs]
-  (let [re (re-pattern (secret-word-to-re-str (game :guessed-so-far)))]
+(defn mk-re
+  [game]
+  (re-pattern (secret-word-to-re-str (game :guessed-so-far))))
+  
+(defn word-candidates
+  [game words]
+  (let [re (mk-re game)]
     (filter #(not (contains? (:wrong-words game) %))
-	    (filter #(re-find re %) strs))))
+	    (filter #(re-find re %) words))))
+
+(defn mk-strategy
+  "Return initial strategy for a game."
+  [game]
+  {:game game
+   :words (word-candidates game lexicon)})
 
 ;; Now, we just find the safest guess.
 ;; But we should consider which guess provides the most info.
@@ -35,23 +44,26 @@
 ;; Rather, if guessing a word is equally informative as guessing a char,
 ;; prefer guessing a word.
 
+(defn guess-ch
+  [strategy ord-chars]
+  (first (filter #(valid-char-guess? (:game strategy) %) ord-chars)))
+
 (defn next-naive-guess
-  "Return: Char or nil."
-  [game]
-  (let [word-cands (candidates game lexicon)
-	_ (println (str "num char candidates: " (count word-cands)))
-	best-chars (keys (sort-hmap (diff-word-counts word-cands)))]
-    (first (filter #(valid-char-guess? game %) best-chars))))
-
-;;--------------
-
-;;
-;; Return: Char|nil, new Strategy.
-;;
+  "Return 'updated' strategy."
+  [strategy]
+  (println (str "num char candidates: " (count (:words strategy))))
+  (let [ord-chars (keys (sort-hmap (diff-word-counts (:words strategy))))
+	ch (guess-ch strategy ord-chars)
+	new-game (guess-letter (:game strategy) ch)]
+    (mk-strategy new-game)))
 
 (defn next-guess
-  "Return: Char or nil."
-  [game]
-  (if (game-done? game)
+  "Return 'updated' strategy."
+  [strategy]
+  (if (game-done? (:game strategy))
     nil
-    (next-naive-guess game)))
+    (next-naive-guess strategy)))
+
+(defn show-strategy
+  [strategy]
+  (show-game (:game strategy)))

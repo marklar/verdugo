@@ -30,7 +30,7 @@
 (defn game-status [game]
   (cond (won?  game) :game_won
 	(lost? game) :game_lost
-		     :else        :keep-guessing))
+	:else        :keep-guessing))
 
 (defn keep-guessing? [game]
   (= (game-status game) :keep-guessing))

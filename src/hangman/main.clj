@@ -17,11 +17,12 @@
 
 (defn play [game]
   "Keeps making guesses until fails."
-  (loop [game game]
-    (if-let [guess (next-guess game)]
-      (recur (make-guess game guess))
+  (loop [strategy (mk-strategy game)]
+    (if-let [strat (next-guess strategy)]
+      (do (println (show-strategy strat))
+	  (recur strat))
       (println "done"))))
-
+    
 (def words
      ["comaker"
       "cumulate"
